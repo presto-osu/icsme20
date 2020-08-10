@@ -1,0 +1,108 @@
+import com.android.build.gradle.internal.dependency.ExtractAarTransform
+import com.android.build.gradle.internal.dependency.AarTransform
+import com.android.build.gradle.internal.publishing.AndroidArtifacts
+import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactType
+import com.google.common.collect.ImmutableList
+import org.gradle.api.artifacts.transform.ArtifactTransform
+import org.gradle.api.artifacts.type.ArtifactTypeDefinition
+import static org.gradle.api.internal.artifacts.ArtifactAttributes.ARTIFACT_FORMAT
+
+group 'presto.privaid.instrument'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    repositories {
+        google()
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.google.gms:google-services:4.3.0'
+        classpath 'com.android.tools.build:gradle:3.1.1'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:5.1.0'
+    }
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'presto.privaid.instrument.Main'
+    }
+}
+
+configurations {
+    aar {
+        attributes {
+            attribute(ARTIFACT_FORMAT, ArtifactTypeDefinition.JAR_TYPE)
+        }
+
+        // Add the aar inner jars to the compileClasspath
+        sourceSets.main.compileClasspath += it
+
+        // Put our custom dependencies onto IDEA's PROVIDED scope
+        apply plugin: 'idea'
+        idea.module.scopes.COMPILE.plus += [it]
+    }
+}
+
+repositories {
+    google()
+    jcenter()
+//    mavenCentral()
+    maven {
+        name "soot-snapshot"
+        url "https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot"
+    }
+    maven {
+        name "soot-release"
+        url "https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release"
+    }
+}
+
+
+dependencies {
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    implementation 'ca.mcgill.sable:soot:3.3.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    
+    def explodedAarType = ArtifactType.EXPLODED_AAR.getType()
+    registerTransform {
+        from.attribute(ARTIFACT_FORMAT, AndroidArtifacts.TYPE_AAR)
+        to.attribute(ARTIFACT_FORMAT, explodedAarType)
+        artifactTransform(ExtractAarTransform)
+    }
+
+    registerTransform {
+        from.attribute(ARTIFACT_FORMAT, explodedAarType)
+        to.attribute(ARTIFACT_FORMAT, "classes.jar")
+        artifactTransform(AarTransform) { params(ArtifactType.JAR, false) }
+    }
+
+    registerTransform {
+        from.attribute(ARTIFACT_FORMAT, "classes.jar")
+        to.attribute(ARTIFACT_FORMAT, ArtifactTypeDefinition.JAR_TYPE)
+        artifactTransform(ClassesJarArtifactTransform)
+    }
+    
+    aar 'com.google.firebase:firebase-core:17.0.0'
+
+    def targetSdkVersion = 28
+    def sdkDir = System.getenv("ANDROID_HOME")
+    compile files("${sdkDir}/platforms/android-${targetSdkVersion}/android.jar")
+}
+
+class ClassesJarArtifactTransform extends ArtifactTransform {
+
+    @Override
+    List<File> transform(File file) {
+        final String[] names = file.getPath().split("/")
+        final String aarName = names[names.length - 4]
+        final File renamedJar = new File(getOutputDirectory(), aarName + ".jar")
+        renamedJar << file.bytes
+        return ImmutableList.of(renamedJar)
+    }
+}

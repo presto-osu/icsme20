@@ -1,0 +1,327 @@
+{
+  "com.infowars.official": {
+    "init": {
+      "className": "com.infowars.official.InfoWarsApp",
+      "method": "void onCreate()"
+    },
+    "replaceLogEventCall": [
+      {
+        "className": "com.infowars.official.analytics.Analytics",
+        "method": "void logArticleAction(java.lang.String,com.infowars.official.model.Article,boolean)"
+      }
+    ],
+    "addContentToDictionary": [
+      {
+        "className": "com.infowars.official.repository.ArticleRepository",
+        "method": "void handleFeedResponse(java.util.List,com.parse.ParseException)",
+        "insertAfter": "$r01 = (com.infowars.official.model.Article) $r06",
+        "eventType": "article_action",
+        "stringVariableName": "articleUrl",
+        "bundleKey": "article_url",
+        "extractorMethod": "infowarsDictItemExtractor",
+        "collection": false
+      }
+    ]
+  },
+
+  "com.sparkpeople.android.cookbook": {
+    "init": {
+      "className": "com.sparkpeople.android.cookbook.HealthyRecipesApplication",
+      "method": "void onCreate()"
+    },
+    "replaceLogEventCall": [
+      {
+        "className": "com.sparkpeople.android.cookbook.SparkRecipesBaseActivity",
+        "method": "void DoFireBaseSelectContent(java.lang.String,java.lang.String)"
+      }
+    ],
+    "addContentToDictionary": [
+      {
+        "className": "com.sparkpeople.android.cookbook.fragments.MainFragment",
+        "method": "void ProcessMainScreenData(boolean,java.lang.String,long)",
+        "insertAfter": "$l05 = virtualinvoke $r33.<org.json.JSONObject: long getLong(java.lang.String)>(\"recipe_id\")",
+        "eventType": "select_content",
+        "stringVariableName": "recipeId",
+        "bundleKey": "item_id",
+        "extractorMethod": "cookbookDictItemExtractor",
+        "collection": false
+      },
+      {
+        "className": "com.sparkpeople.android.cookbook.fragments.MainFragment",
+        "method": "void ProcessMainScreenData(boolean,java.lang.String,long)",
+        "insertAfter": "$l05 = virtualinvoke $r33.<org.json.JSONObject: long getLong(java.lang.String)>(\"curated_id\")",
+        "eventType": "select_content",
+        "stringVariableName": "curatedId",
+        "bundleKey": "item_id",
+        "extractorMethod": "cookbookDictItemExtractor",
+        "collection": false
+      }
+    ]
+  },
+
+  "com.aggrego.loop": {
+    "init": {
+      "className": "com.aggrego.loop.common.AppController",
+      "method": "void onCreate()"
+    },
+    "replaceLogEventCall": [
+      {
+        "className": "com.aggrego.loop.master.ArticalDetailActivity",
+        "method": "void makejsonobject(java.lang.String)"
+      }
+    ],
+    "addContentToDictionary": [
+      {
+        "className": "com.aggrego.loop.fragment.LatestFragment",
+        "method": "void makejsonobject(java.lang.String)",
+        "insertAfter": "specialinvoke $r11.<com.aggrego.loop.model.LatestModel: void <init>(org.json.JSONObject)>($r27)",
+        "eventType": "select_content",
+        "stringVariableName": "articleTitle",
+        "bundleKey": "search_term",
+        "extractorMethod": "loopDictItemExtractor",
+        "collection": false
+      }
+    ]
+  },
+
+  "com.insofttech.reststops": {
+    "init": {
+      "className": "com.insofttech.reststops.MainApplication",
+      "method": "void onCreate()"
+    },
+    "replaceLogEventCall": [
+      {
+        "className": "com.insofttech.reststops.RestStopDetailsActivity",
+        "method": "void onCreate(android.os.Bundle)"
+      }
+    ],
+    "addContentToDictionary": [
+      {
+        "className": "com.insofttech.reststops.RestStopListActivity",
+        "method": "void l()",
+        "insertAfter": "$r11 = (com.insofttech.reststops.b.b) $r25",
+        "eventType": "select_content",
+        "stringVariableName": "itemId",
+        "bundleKey": "item_id",
+        "extractorMethod": "reststopsDictItemExtractor",
+        "collection": false
+      }
+    ]
+  },
+
+  "com.opensnow.android": {
+    "init": {
+      "className": "com.opensnow.android.base.OpenSnowApplication",
+      "method": "void onCreate()"
+    },
+    "replaceLogEventCall": [
+      {
+        "className": "com.opensnow.android.util.AnalyticsManager",
+        "method": "void logScreenEvent(java.lang.String,java.util.Map,java.lang.String)"
+      }
+    ],
+    "addContentToDictionary": [
+      {
+        "className": "com.opensnow.android.ui.fragment.NewsFragment",
+        "method": "void onSaveInstanceState(android.os.Bundle)",
+        "insertAfter": "$l01 = virtualinvoke $r01.<com.opensnow.android.model.realm.News: long getId()>()",
+        "eventType": "View_News_Detail",
+        "stringVariableName": "newsId",
+        "bundleKey": "news_id",
+        "extractorMethod": "opensnowDictItemExtractor",
+        "collection": false
+      }
+    ]
+  },
+
+  "shipmate.carnival": {
+    "init": {
+      "className": "shipmate.carnival.ShipMateApp",
+      "method": "void onCreate()"
+    },
+    "replaceLogEventCall": [
+      {
+        "className": "shipmate.carnival.analytics.PhotoAnalytics",
+        "method": "void logViewPhoto(android.content.Context,shipmate.carnival.model.database.PhotoListItem,java.lang.String,java.lang.String)"
+      }
+    ],
+    "addContentToDictionary": [
+      {
+        "className": "shipmate.carnival.ui.view.base.PhotosListFragment",
+        "method": "void setPhotos(java.util.List)",
+        "insertAfter": "virtualinvoke $r1.<shipmate.carnival.ui.adapter.PhotoListAdapter: void setPhotos(java.util.List)>($r0)",
+        "eventType": "view_item",
+        "stringVariableName": "photoId",
+        "bundleKey": "item_id",
+        "extractorMethod": "shipmateDictItemExtractor",
+        "collection": true,
+        "paramN": 0,
+        "castTo": "shipmate.carnival.model.database.PhotoListItem"
+      }
+    ]
+  },
+
+  "com.channelstv.channels.mobile": {
+    "init": {
+      "className": "com.channelstv.channels.mobile.ui.MainActivity",
+      "method": "void onCreate(android.os.Bundle)"
+    },
+    "replaceLogEventCall": [
+      {
+        "className": "com.channelstv.channels.mobile.ui.PostRead",
+        "method": "void getPostDetailsFromActivity(android.content.Intent)"
+      }
+    ],
+    "addContentToDictionary": [
+      {
+        "className": "com.channelstv.channels.mobile.ui.Business",
+        "method": "com.channelstv.channels.mobile.data.Dbusiness[] getCurrentPosts(java.lang.String)",
+        "insertAfter": "$r3 = virtualinvoke $r5.<org.json.JSONObject: java.lang.String getString(java.lang.String)>(\"url\")",
+        "eventType": "select_content",
+        "stringVariableName": "postUrl",
+        "bundleKey": "item_id",
+        "extractorMethod": "channelsDictItemExtractor",
+        "collection": false
+      },
+      {
+        "className": "com.channelstv.channels.mobile.ui.Entertainment",
+        "method": "com.channelstv.channels.mobile.data.Dentertainment[] getCurrentPosts(java.lang.String)",
+        "insertAfter": "$r3 = virtualinvoke $r5.<org.json.JSONObject: java.lang.String getString(java.lang.String)>(\"url\")",
+        "eventType": "select_content",
+        "stringVariableName": "postUrl",
+        "bundleKey": "item_id",
+        "extractorMethod": "channelsDictItemExtractor",
+        "collection": false
+      },
+      {
+        "className": "com.channelstv.channels.mobile.ui.Headlines",
+        "method": "com.channelstv.channels.mobile.data.Dheadlines[] getCurrentHeadlines(java.lang.String)",
+        "insertAfter": "$r3 = virtualinvoke $r5.<org.json.JSONObject: java.lang.String getString(java.lang.String)>(\"url\")",
+        "eventType": "select_content",
+        "stringVariableName": "postUrl",
+        "bundleKey": "item_id",
+        "extractorMethod": "channelsDictItemExtractor",
+        "collection": false
+      },
+      {
+        "className": "com.channelstv.channels.mobile.ui.Health",
+        "method": "com.channelstv.channels.mobile.data.Dhealth[] getCurrentPosts(java.lang.String)",
+        "insertAfter": "$r3 = virtualinvoke $r5.<org.json.JSONObject: java.lang.String getString(java.lang.String)>(\"url\")",
+        "eventType": "select_content",
+        "stringVariableName": "postUrl",
+        "bundleKey": "item_id",
+        "extractorMethod": "channelsDictItemExtractor",
+        "collection": false
+      },
+      {
+        "className": "com.channelstv.channels.mobile.ui.Local",
+        "method": "com.channelstv.channels.mobile.data.Dlocal[] getCurrentPosts(java.lang.String)",
+        "insertAfter": "$r3 = virtualinvoke $r5.<org.json.JSONObject: java.lang.String getString(java.lang.String)>(\"url\")",
+        "eventType": "select_content",
+        "stringVariableName": "postUrl",
+        "bundleKey": "item_id",
+        "extractorMethod": "channelsDictItemExtractor",
+        "collection": false
+      },
+      {
+        "className": "com.channelstv.channels.mobile.ui.Politics",
+        "method": "com.channelstv.channels.mobile.data.Dpolitics[] getCurrentPosts(java.lang.String)",
+        "insertAfter": "$r3 = virtualinvoke $r5.<org.json.JSONObject: java.lang.String getString(java.lang.String)>(\"url\")",
+        "eventType": "select_content",
+        "stringVariableName": "postUrl",
+        "bundleKey": "item_id",
+        "extractorMethod": "channelsDictItemExtractor",
+        "collection": false
+      },
+      {
+        "className": "com.channelstv.channels.mobile.ui.Sports",
+        "method": "com.channelstv.channels.mobile.data.Dsports[] getCurrentPosts(java.lang.String)",
+        "insertAfter": "$r3 = virtualinvoke $r5.<org.json.JSONObject: java.lang.String getString(java.lang.String)>(\"url\")",
+        "eventType": "select_content",
+        "stringVariableName": "postUrl",
+        "bundleKey": "item_id",
+        "extractorMethod": "channelsDictItemExtractor",
+        "collection": false
+      }
+    ]
+  },
+
+  "com.primedia.apartmentguide": {
+    "init": {
+      "className": "com.rentpath.lib.RPApplication",
+      "method": "void onCreate()"
+    },
+    "replaceLogEventCall": [
+      {
+        "className": "com.rentpath.lib.util.tracking.TrackingUtil",
+        "method": "void trackECommerceView(java.lang.String,float,java.lang.String)"
+      }
+    ],
+    "addContentToDictionary": [
+      {
+        "className": "com.rentpath.lib.search.fragment.ListingFragment",
+        "method": "void fillListAdapter(java.util.List)",
+        "insertAfter": "specialinvoke $r07.<com.rentpath.lib.search.fragment.ListingFragment: void sortListings(java.util.List)>($r14)",
+        "eventType": "view_item",
+        "stringVariableName": "inventoryId",
+        "bundleKey": "item_id",
+        "extractorMethod": "apartmentguideDictItemExtractor",
+        "collection": true,
+        "paramN": 0,
+        "castTo": "com.rentpath.networking.model.RPInventory"
+      }
+    ]
+  },
+
+  "com.rent": {
+    "init": {
+      "className": "com.rentpath.lib.RPApplication",
+      "method": "void onCreate()"
+    },
+    "replaceLogEventCall": [
+      {
+        "className": "com.rentpath.lib.util.tracking.TrackingUtil",
+        "method": "void trackECommerceView(java.lang.String,float,java.lang.String)"
+      }
+    ],
+    "addContentToDictionary": [
+      {
+        "className": "com.rentpath.lib.search.fragment.ListingFragment",
+        "method": "void fillListAdapter(java.util.List)",
+        "insertAfter": "specialinvoke $r04.<com.rentpath.lib.search.fragment.ListingFragment: void sortListings(java.util.List)>($r08)",
+        "eventType": "view_item",
+        "stringVariableName": "inventoryId",
+        "bundleKey": "item_id",
+        "extractorMethod": "rentDictItemExtractor",
+        "collection": true,
+        "paramN": 0,
+        "castTo": "com.rentpath.networking.model.RPInventory"
+      }
+    ]
+  },
+
+  "com.androidauthority.app": {
+    "init": {
+      "className": "com.androidauthority.app.ui.activity.mainscreen.MainScreenActivity",
+      "method": "void onCreate(android.os.Bundle)"
+    },
+    "replaceLogEventCall": [
+      {
+        "className": "com.androidauthority.app.utils.AnalyticsHelper",
+        "method": "void logPostView(com.androidauthority.app.model.Post)"
+      }
+    ],
+    "addContentToDictionary": [
+      {
+        "className": "com.androidauthority.app.tasks.DownloadPostsTask",
+        "method": "java.util.List doInBackground(java.lang.Void[])",
+        "insertAfter": "$r03 = (com.androidauthority.app.model.Post) $r08",
+        "eventType": "view_item",
+        "stringVariableName": "postId",
+        "bundleKey": "item_id",
+        "extractorMethod": "androidauthorityDictItemExtractor",
+        "collection": false
+      }
+    ]
+  }
+}

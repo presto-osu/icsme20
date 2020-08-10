@@ -1,0 +1,112 @@
+#!/usr/bin/env python3
+
+import argparse
+import os
+from subprocess import call
+
+GATOR_DIR = os.path.realpath(os.path.dirname(__file__))
+
+LOG_DIR = os.path.join(GATOR_DIR, 'log')
+XML_DIR = os.path.join(GATOR_DIR, 'xml')
+
+
+def instrument(args, unknown):
+    instrument_dir = GATOR_DIR
+    rt_class_dir = os.path.join(instrument_dir, 'build', 'classes', 'java',  'main')
+    jar = os.path.join(instrument_dir, 'build', 'libs', 'presto.privaid.instrument-1.0-SNAPSHOT-all.jar')
+    cmd = [
+        'java',
+        '-cp',
+        jar,
+        'presto.privaid.instrument.Main',
+        args.apkpath,
+        str(args.verbose),
+        args.instrument_spec,
+        os.path.join(args.sdk_path, 'platforms'),
+        rt_class_dir,
+    ]
+    cmd.extend(unknown)
+    print('...... %s' % ' '.join(cmd))
+    if args.debug:
+        return
+    call(cmd)
+
+
+def build(args, unknown):
+    cmd = [
+        os.path.join(GATOR_DIR, 'gradlew'), 'shadowJar'
+    ]
+    call(cmd)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='GATOR: Program Analysis Toolkit For Android.')
+
+    subparsers = parser.add_subparsers(dest='command', metavar='COMMAND')
+    subparsers.required = True
+
+    ####################################
+    ####################################
+    parser_compile = subparsers.add_parser(
+        'build', aliases=['b'], help='build')
+    parser_compile.set_defaults(func=build)
+
+    ####################################
+    ####################################
+    parser_instrument = subparsers.add_parser(
+        'instrument',
+        aliases=['i'],
+        help='instrument APK and store in "sootOutput" directory')
+    parser_instrument.set_defaults(func=instrument)
+
+    parser_instrument.add_argument(
+        '-v',
+        '--verbose',
+        dest='verbose',
+        action='store_true',
+        default=False,
+        help='verbose mode')
+
+    parser_instrument.add_argument(
+        '-d',
+        '--debug',
+        dest='debug',
+        action='store_true',
+        default=False,
+        help='debug mode')
+
+    parser_instrument.add_argument(
+        '-s',
+        '--sdk',
+        dest='sdk_path',
+        metavar='PATH',
+        default=os.environ['ANDROID_SDK'],
+        required=False,
+        help='path to the Android SDK')
+
+    parser_instrument.add_argument(
+        '-p',
+        '--apk',
+        dest='apkpath',
+        metavar='PATH',
+        required=True,
+        help='path to the APK')
+
+    parser_instrument.add_argument(
+        '-i',
+        '--instrument_spec',
+        dest='instrument_spec',
+        metavar='PATH',
+        required=True,
+        help='path to the instrumentation spec')
+
+    ####################################
+    ####################################
+
+    args, unknown = parser.parse_known_args()
+    args.func(args, unknown)
+
+
+if __name__ == '__main__':
+    main()
