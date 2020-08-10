@@ -1,0 +1,4 @@
+/code/.gradle/
+/code/build/
+/.idea/
+/code/sootOutput/*.apk
