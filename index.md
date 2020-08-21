@@ -1,37 +1,11 @@
-## Welcome to GitHub Pages
+This repository contains the source code of the tools used for static analysis and instrumentation of 9 android apps, and the scripts used to reproduce the results described in the ICSME'20 paper "Introducing Differential Privacy Mechanisms for Mobile App Analytics of Dynamic Content".
 
-You can use the [editor on GitHub](https://github.com/presto-osu/icsme20/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+The directory structure of this repository is as follows:
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
-
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/presto-osu/icsme20/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+- README.md: This file.
+- LICENSE: License of the software components developed at The Ohio State University.
+- apk: The APK files of the 9 apps used in the paper.
+- code: Source code for instrumentation and static analysis of the apps, and the scripts to simulate user behavior.
+- db: Database files containing the contents served to and elements visited by the simulated users in each run of the apps.
+- simulation: Scripts to read and randomize the data in [db](https://github.com/presto-osu/icsme20/blob/master/db), and to plot the errors as shown in the paper.
+- INSTRUCTIONS.md: Instructions for reproducing the results shown in the paper.
