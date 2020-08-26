@@ -2,3 +2,4 @@
 /code/build/
 /.idea/
 /code/sootOutput/*.apk
+/**/__pycache__/
