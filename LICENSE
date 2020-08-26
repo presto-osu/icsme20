@@ -19,6 +19,11 @@ and/or other materials provided with the distribution.
 - Neither the name of The Ohio State University nor the names of its
 contributors may be used to endorse or promote products derived from this
 software without specific prior written permission.
+- For the sake of reproducibility of research results, this release
+contains APKs of several commercial Android apps. These apps are included
+only for the purposes of research transparency and for use by other
+academic researchers, and should not ever be redistributed or used for
+any commercial purposes.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
