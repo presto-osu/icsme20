@@ -65,7 +65,7 @@ def get_synthetic_users(data, count):
 def store_events_to_file(pkg):
     data = read_all_dicts_and_events(pkg)
 
-    for count in [100]:#, 1000, 10000, 100000]:
+    for count in [100, 1000, 10000, 100000]:
         os.makedirs(SYN_DATA_DIR, exist_ok=True)
         with open('%s/%s_%d.json' % (SYN_DATA_DIR, pkg, count), 'w') as f:
             json.dump(get_synthetic_users(data, count), f)

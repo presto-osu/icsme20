@@ -118,7 +118,7 @@ def get_errors(data, epsilon, prng, n, times=1):
 
 # plot relative error for all users (actual and synthetic) of all apps
 def plot_errors_all(epsilon, prng, n):
-    n_users = [100]#, 1000, 10000, 100000]
+    n_users = [100, 1000, 10000, 100000]
     data = {}
 
     if os.path.exists('%s.json' % EPSILON_NAME[epsilon]):
