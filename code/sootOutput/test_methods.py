@@ -76,33 +76,6 @@ def infowars_test(g, dev):
         time.sleep(1)
 
 
-def tmsdurham_test(g, dev):
-    max_events = 30
-    n_events = 0
-    d = Device(dev)
-    g.open_app(dev)
-    time.sleep(3)
-
-    while n_events < max_events:
-        listView = d(resourceId='com.tmsdurham.shortlist:id/recycler_view')
-        listView.scroll(steps=300)
-        items = listView.child(resourceId='com.tmsdurham.shortlist:id/card_view')
-        available = []
-        for item in items:
-            if item.exists:
-                available.append(item)
-        if len(available) == 0:
-            continue
-        c_item = random.choice(available)
-        c_item.click.wait()
-        time.sleep(1)
-        n_events += 1
-        if n_events % 10 == 0:
-            print('#events: ', n_events)
-        d.press.back()
-        time.sleep(1)
-
-
 def aggrego_test(g, dev):
     max_events = 100
     n_events = 0
@@ -423,35 +396,6 @@ def rent_test(g, dev):
     time.sleep(60)
 
 
-def androidauthority_test(g, dev):
-    max_events = 5
-    n_events = 0
-    d = Device(dev)
-
-    g.open_app(dev)
-    time.sleep(10)
-    no_button = d(resourceId='android:id/button2', text='NO')
-    if no_button.exists:
-        no_button.click.wait()
-    d.press.back()
-
-    while n_events < max_events:
-        listView = d(resourceId='com.androidauthority.app:id/posts_list')
-        available = []
-        for item in d(resourceId='com.androidauthority.app:id/feed_item_view_image'):
-            if item.exists:
-                available.append(item)
-        if len(available) == 0:
-            continue
-
-        if random.random() < 0.9:
-            c_item = random.choice(available)
-            c_item.click.wait()
-            n_events += 1
-            d.press.back()
-        listView.scroll(steps=random.randint(30, 60))
-
-
 test_methods = {
     'com.sparkpeople.android.cookbook': sparkpeople_test,
     'com.infowars.official': infowars_test,
@@ -462,5 +406,4 @@ test_methods = {
     'com.channelstv.channels.mobile': channels_test,
     'com.primedia.apartmentguide': apartmentguide_test,
     'com.rent': rent_test,
-    'com.androidauthority.app': androidauthority_test
 }
