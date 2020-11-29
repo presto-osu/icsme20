@@ -3,6 +3,7 @@
 import glob
 import sqlite3
 import random
+from collections import defaultdict
 from pprint import pprint
 import json
 import math
@@ -35,67 +36,33 @@ def get_histogram(data):
     return hist
 
 
-# returns the randomized set of events over the dictionary
-def get_randomized_events(dict_elems, events, epsilon, prng):
+def get_estimated_histogram(data, epsilon, prng):
+    hist = defaultdict(float)
+    n_dicts = defaultdict(float)
+    n_reports = defaultdict(float)
     p_high = math.exp(epsilon) / (1 + math.exp(epsilon))
     p_low = 1 / (1 + math.exp(epsilon))
-    rand_events = set()
-
-    for e in dict_elems:
-        if e in events:
-            if prng.uniform() <= p_high:
-                rand_events.add(e)
-        elif prng.uniform() <= p_low:
-            rand_events.add(e)
-
-    return rand_events
-
-
-# returns dictionary and randomized events for all runs on the app
-def get_all_dicts_and_randomized_events(data, epsilon, prng, times):
-    ret = []
-    for dict_elems, events in data:
-        for i in range(times):
-            ret.append((dict_elems, get_randomized_events(dict_elems, events, epsilon, prng)))
-    return ret
-
-
-# returns the histograms generated from the randomized events
-def get_estimated_histogram(data, epsilon):
-    n_user = len(data)
-    n_dicts = {}
-    n_events = {}
-    hist = {}
 
     for dict_elems, events in data:
-        for c in dict_elems:
-            hist[c] = 0
-            if c not in n_dicts:
-                n_dicts[c] = 0
-            n_dicts[c] += 1
-        for c in events:
-            if c not in n_events:
-                n_events[c] = 0
-            n_events[c] += 1
+        for e in dict_elems:
+            n_dicts[e] += 1
+            if e in events:
+                if prng.uniform() <= p_high:
+                    n_reports[e] += 1
+            else:
+                if prng.uniform() <= p_low:
+                    n_reports[e] += 1
 
-    for c in hist:
-        if c not in n_events:
-            n_events[c] = 0
-        hist[c] = ((1 + math.exp(epsilon)) * n_events[c] - n_dicts[c]) / (math.exp(epsilon) - 1)
-
-    for c in hist:
-        hist[c] = min(1, max(0, hist[c] / n_user))
+    for dict_elems, _ in data:
+        for e in dict_elems:
+            hist[e] = min(1, max(0, (n_reports[e] - p_low * n_dicts[e]) / (p_high - p_low) / len(data)))
 
     return hist
 
 
 # returns relative error for actual and estimated histograms of an app
 def relative_error(hist, rhist):
-    err = 0
-    for c in hist:
-        err += abs(hist[c] - rhist[c])
-
-    return err / sum(hist.values())
+    return sum(abs(hist[k] - rhist[k]) for k in hist) / sum(hist.values())
 
 
 error_funcs = {
@@ -104,14 +71,15 @@ error_funcs = {
 
 
 # return list of errors from n runs with specified error function
-def get_errors(data, epsilon, prng, n, times=1):
+def get_errors(data, epsilon, prng, n):
     hist = get_histogram(data)
     err = []
 
     for i in range(n):
-        rdata = get_all_dicts_and_randomized_events(data, epsilon, prng, times)
-        rhist = get_estimated_histogram(rdata, epsilon)
+        rhist = get_estimated_histogram(data, epsilon, prng)
         err.append(relative_error(hist, rhist))
+        print('*', end='')
+    print()
 
     return err
 
@@ -119,20 +87,22 @@ def get_errors(data, epsilon, prng, n, times=1):
 # plot relative error for all users (actual and synthetic) of all apps
 def plot_errors_all(epsilon, prng, n):
     n_users = [100, 1000, 10000, 100000]
-    data = {}
+    results = {}
 
     if os.path.exists('%s.json' % EPSILON_NAME[epsilon]):
         with open('%s.json' % EPSILON_NAME[epsilon]) as f:
-            data = json.load(f)
+            results = json.load(f)
     else:
         for u in range(len(n_users)):
-            nu = str(n_users[u])
-            data[nu] = {}
+            nu = n_users[u]
+            print('%d users' % nu)
+            results[str(nu)] = {}
             for pkg in pkgs:
-                syn_data = read_synthetic_user_data(pkg, n_users[u])
-                data[nu][short_names[pkg]] = get_errors(syn_data, epsilon, prng, n)
+                print(short_names[pkg])
+                data = read_synthetic_user_data(pkg, nu)
+                results[str(nu)][short_names[pkg]] = get_errors(data, epsilon, error_funcs[err_func], prng, n)
         with open('%s.json' % EPSILON_NAME[epsilon], 'w') as f:
-            json.dump(data, f)
+            json.dump(results, f)
 
     width = 0.2
     colors = ['gainsboro', 'lightgray', 'darkgray', 'gray']
@@ -154,7 +124,7 @@ def plot_errors_all(epsilon, prng, n):
 
         for pkg in pkgs:
             print(pkg)
-            errors = data[str(nu)][short_names[pkg]]
+            errors = results[str(nu)][short_names[pkg]]
             mean_errs.append(np.mean(errors))
             conf = 0.95
             if n < 30:
